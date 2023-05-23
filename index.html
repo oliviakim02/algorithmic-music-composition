@@ -1,0 +1,46 @@
+<button id="playButton">Play Composition</button>
+
+<script src="https://tonejs.github.io/build/Tone.js"></script>
+
+<script>
+  const synth = new Tone.PolySynth().toDestination();
+
+  const notes = ['C4', 'C4', 'D4', 'C4', 'F4', 'E4',
+    'C4', 'C4', 'D4', 'C4', 'G4', 'F4',
+    'C4', 'C4', 'C5', 'A4', 'F4', 'E4',
+    'D4', 'A#4', 'A#4', 'A4', 'F4', 'G4', 'F4',
+  ];
+
+  function generateRandomDurations() {
+    const durations = [];
+    const availableDurations = ['2n', '4n', '8n', '8t', '16n', '32n', '64n', '128n', '256n'];
+    for (let i = 0; i < notes.length; i++) {
+      const randomIndex = Math.floor(Math.random() * availableDurations.length);
+      durations.push(availableDurations[randomIndex]);
+    }
+    return durations;
+  }
+
+  function playComposition() {
+    const durations = generateRandomDurations();
+
+    const melody = new Tone.Sequence((time, note) => {
+      synth.triggerAttackRelease(note, '4n', time);
+    }, notes).start(0);
+
+    let currentTime = Tone.now();
+
+    for (let i = 0; i < notes.length; i++) {
+      const note = notes[i];
+      const duration = durations[i];
+
+      synth.triggerAttackRelease(note, duration, currentTime);
+
+      currentTime += Tone.Time(duration).toSeconds();
+    }
+
+  }
+
+  const playButton = document.getElementById('playButton');
+  playButton.addEventListener('click', playComposition);
+</script>
