@@ -1,46 +1,103 @@
-<button id="playButton">Play Composition</button>
+<html>
 
-<script src="https://tonejs.github.io/build/Tone.js"></script>
+  <!--   reflection: for this assignment, i wanted to experiment with a tune that everyone knows, like the happy birthday song. using math.random and an array of note durations (ranging from whole notes to 256th notes) to generate random tempos and durations, the familiar happy birthday tune plays in a slightly different way each time you press the party hat. i found it particularly interesting when you press the hat multiple times, creating a "symphony" of random happy birthday tempos that have both dissonance and harmonies at different moments, and you can hear how each melody resolves at its own tempo. -->
 
-<script>
-  const synth = new Tone.PolySynth().toDestination();
+  <head>
+    <meta charset="UTF-8">
+    <title>Happy Birthday Algorithm</title>
 
-  const notes = ['C4', 'C4', 'D4', 'C4', 'F4', 'E4',
-    'C4', 'C4', 'D4', 'C4', 'G4', 'F4',
-    'C4', 'C4', 'C5', 'A4', 'F4', 'E4',
-    'D4', 'A#4', 'A#4', 'A4', 'F4', 'G4', 'F4',
-  ];
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
 
-  function generateRandomDurations() {
-    const durations = [];
-    const availableDurations = ['2n', '4n', '8n', '8t', '16n', '32n', '64n', '128n', '256n'];
-    for (let i = 0; i < notes.length; i++) {
-      const randomIndex = Math.floor(Math.random() * availableDurations.length);
-      durations.push(availableDurations[randomIndex]);
-    }
-    return durations;
-  }
+      .partyHatButton {
+        width: 100px;
+        height: 104px;
+        position: relative;
+        padding: 10px;
+        background-color: #bd91ff;
+        clip-path: polygon(50% 0%, 0% 100%, 150% 200%);
+        border: 3px solid black;
+      }
 
-  function playComposition() {
-    const durations = generateRandomDurations();
+      .circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 100%;
+        background-color: white;
+        position: relative;
+        bottom: 40px;
+        right: 67px;
+        border: 2px solid black;
+      }
 
-    const melody = new Tone.Sequence((time, note) => {
-      synth.triggerAttackRelease(note, '4n', time);
-    }, notes).start(0);
+      .bottom {
+        width: 100px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: black;
+        position: relative;
+        top: 50px;
+        right: 13px;
+      }
+    </style>
 
-    let currentTime = Tone.now();
+  </head>
 
-    for (let i = 0; i < notes.length; i++) {
-      const note = notes[i];
-      const duration = durations[i];
+  <body>
 
-      synth.triggerAttackRelease(note, duration, currentTime);
+    <button id="playButton" class="partyHatButton">
+      <div class="bottom"></div>
+    </button>
+    <div class="circle"></div>
 
-      currentTime += Tone.Time(duration).toSeconds();
-    }
+    <script src="https://tonejs.github.io/build/Tone.js"></script>
 
-  }
+    <script>
+      const synth = new Tone.PolySynth().toDestination();
 
-  const playButton = document.getElementById('playButton');
-  playButton.addEventListener('click', playComposition);
-</script>
+      const notes = ['C4', 'C4', 'D4', 'C4', 'F4', 'E4',
+        'C4', 'C4', 'D4', 'C4', 'G4', 'F4',
+        'C4', 'C4', 'C5', 'A4', 'F4', 'E4',
+        'D4', 'A#4', 'A#4', 'A4', 'F4', 'G4', 'F4',
+      ];
+
+      function generateRandomDurations() {
+        const durations = [];
+        const availableDurations = ['1n', '2n', '4n', '8n', '8t', '16n', '32n', '64n', '128n', '256n'];
+        for (let i = 0; i < notes.length; i++) {
+          const randomIndex = Math.floor(Math.random() * availableDurations.length);
+          durations.push(availableDurations[randomIndex]);
+        }
+        return durations;
+      }
+
+      function playComposition() {
+        const durations = generateRandomDurations();
+
+        let currentTime = Tone.now();
+
+        for (let i = 0; i < notes.length; i++) {
+          const note = notes[i];
+          const duration = durations[i];
+
+          synth.triggerAttackRelease(note, duration, currentTime);
+
+          currentTime += Tone.Time(duration).toSeconds();
+        }
+
+      }
+
+      const playButton = document.getElementById('playButton');
+      playButton.addEventListener('click', playComposition);
+    </script>
+
+  </body>
+
+</html>
